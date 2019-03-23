@@ -1,4 +1,4 @@
-# cortex-enterprise
+# Cortex Enterprise
 
 TODO
 
