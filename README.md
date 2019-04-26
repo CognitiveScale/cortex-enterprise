@@ -49,10 +49,10 @@ You will require the following details to complete the instantiation process:
   - DNS Zone: (created as part of the process)
   - Cortex Administrator: Email Address (provided by user)
   - Cortex Administrator: Password (created by user)
-  - Cortex Account Name: (provided by CognitiveScale in welcome email) 
+  - Cortex Account Name: (created by user) 
   - Cortex Administrator phone number: (provided by user)
 
-1. Go to [Azure Marketplace][Azure-account] to create a Subscription - Select a "Pay" Azure subscription.
+1. Go to [Azure Marketplace][Azure-account] to create a Subscription - Select a "Pay" Azure subscription or use your existing Azure subscription.
 2. Learn about Azure: [Getting Started with Azure][b6d1b728].
 3. Recieve CognitiveScale welcome email that provides the `cortex license key`, which provides the proxy access to the Cortex Documentation and Cortex Marketplace web portals.
 4. Get started in the Azure portal:
@@ -98,7 +98,7 @@ After the prerequisite steps are completed, the client configures their stack in
   
 NOTE: The same Resource Group must be used to create the DNS zone (above) and in the Configuration Setup for the deployment (below).
 
-## Configure Cortex Dedicate Instance  
+## Configure Cortex Dedicated Instance  
 
 1. Login to your Azure Marketplace subscription and go to [CognitiveScale Cortex Cognitive Platform][0613da0c]
 2. Click CREATE.
@@ -118,7 +118,7 @@ NOTE: The same Resource Group must be used to create the DNS zone (above) and in
   - **Cortex Administrator Email Address**: The administrator must have the permissions described about in Prerequisites.
   - **Cortex Administrator Password**: Use a secure password and make note of it.
   - **Confirm Password**
-  - **Cortex Account Name**: Enter the Account Name provided in the CognitiveScale welcome email.
+  - **Cortex Account Name**: Enter your desired Account Name.
 
 6. Click OK.
 
@@ -139,7 +139,7 @@ Your Cortex Dedicated Instance deployment process usually takes 20-30 minutes, b
 
 ## Monitor your deployment
 
-To monitor the logs, use the following Azure command for your Resource Group: `az container logs --follow -g mr-qa-03253 -n provision`
+To monitor the logs, use the following Azure command for your Resource Group: `az container logs --follow -g <YourSubscription> -n provision`
 
 ## Determine your Base Domain
 
