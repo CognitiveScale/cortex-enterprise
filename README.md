@@ -139,11 +139,11 @@ Your Cortex Dedicated Instance deployment process usually takes 20-30 minutes, b
 
 ## Monitor your deployment
 
-To monitor the logs, use the following Azure command for your Resource Group: `az container logs --follow -g <YourSubscription> -n provision`
+To monitor the logs, use the following Azure command for your Resource Group: `az container logs --follow -g <ResourceGroup> -n provision`
 
 ## Determine your Base Domain
 
-Your base domain is the DNS zone name. 
+Your BASE DOMAIN is the DNS Zone. 
 
 1. Go to your Azure portal. 
 2. Navigate to your Resource Group from the left panel. 
