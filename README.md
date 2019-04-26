@@ -49,6 +49,7 @@ You will require the following details to complete the instantiation process:
   - DNS Zone: (created as part of the process)
   - Cortex Administrator: Email Address (provided by user)
   - Cortex Administrator: Password (created by user)
+
   - Cortex Account Name: (created by user) 
   - Cortex Administrator phone number: (provided by user)
 
