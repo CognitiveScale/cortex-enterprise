@@ -39,15 +39,14 @@ After the prerequisite steps are completed, the client configures their stack in
   - jq
   - k9s
 
-### Azure permissions 
+### Azure permissions required to perform an installation
 
 To complete the Dedicated Cortex Instance deployment you must have the abiltiy to perform the following actions in Azure:
 
-  - Create a pay-as-you-go subscription
+  - Create a subscription
   - Create Resource Groups
   - Create DNS Zones
   - View Azure logs
-  - Register an Internet domain name
   - Create a subdomain NS record
   - Manage (create, delete, and edit) DNS record sets
 
