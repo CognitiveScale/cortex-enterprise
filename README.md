@@ -20,7 +20,7 @@ A Dedicated Cortex Instance is a deployment strategy for CognitiveScale's Cortex
 | --- | --- | --- |
 | **Description** | CognitiveScale’s original Cortex deployment, a multi-tenant, CS-managed cloud solution. | CognitiveScale’s new Cortex deployment, a private-cloud, client-managed  solution. |
 | **Who manages the cloud/stack?** | CognitiveScale | Client |
-| **Where is the stack managed?** | CognitiveScale's AWS Cloud (Rancher) | Client's Azure Cloud (Kubernetes)|
+| **Where is the stack managed?** | CognitiveScale's Cloud | Client's Azure Cloud (Kubernetes)|
 | **What are the advantages of this deployment?** | CognitiveScale manages and monitors stack activity, updates, and infrastructure. Edge add-on option provides data-secure processing. | Clients manage their own individual deployments. Their data is not exposed to CognitiveScale, even indirectly. |
 
 ## Prerequisites for Launching Dedicated Cortex Instance
