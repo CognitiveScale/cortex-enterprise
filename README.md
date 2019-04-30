@@ -12,6 +12,34 @@
 [subscription-help]: https://docs.microsoft.com/en-us/azure/billing/billing-getting-started
 [service principal]: https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-service-principal
 
+## Table of Contents
+
+[What is Dedicated Cortex Instance?](https://github.com/CognitiveScale/cortex-enterprise#what-is-dedicated-cortex-instance)
+
+[Prerequisites for Launching Dedicated Cortex Instance](https://github.com/CognitiveScale/cortex-enterprise#prerequisites-for-launching-dedicated-cortex-instance)
+
+* [Before you begin working in Azure](https://github.com/CognitiveScale/cortex-enterprise#before-you-begin-working-in-azure)
+
+* [Azure permissions required to perform an installation](https://github.com/CognitiveScale/cortex-enterprise#azure-permissions-required-to-perform-an-installation)
+
+* [Deployment details](https://github.com/CognitiveScale/cortex-enterprise#deployment-details)
+
+* [Prerequisite Steps](https://github.com/CognitiveScale/cortex-enterprise#prerequisite-steps)
+
+[Configure Cortex Dedicated Instance](https://github.com/CognitiveScale/cortex-enterprise#configure-cortex-dedicated-instance)
+
+[Monitor your deployment](https://github.com/CognitiveScale/cortex-enterprise#monitor-your-deployment)
+
+[Determine your Base Domain](https://github.com/CognitiveScale/cortex-enterprise#determine-your-base-domain)
+
+[Set up ./kube/config to view cluster through Kubernetes dashboard](https://github.com/CognitiveScale/cortex-enterprise#set-up-kubeconfig-to-view-cluster-through-kubernetes-dashboard)
+
+[View the modsec logs for debugging WAF issues](https://github.com/CognitiveScale/cortex-enterprise#view-the-modsec-logs-for-debugging-waf-issues)
+
+[SMTP Setup](https://github.com/CognitiveScale/cortex-enterprise#smtp-setup)
+
+[Troubleshooting Google domains](https://github.com/CognitiveScale/cortex-enterprise#troubleshooting-google-domains)
+
 ## What is Dedicated Cortex Instance?
 
 A Dedicated Cortex Instance is a deployment strategy for CognitiveScale's Cortex platform. The Cortex platform can be deployed two major ways: on the SaaS Cloud, the original deployment strategy or as a Dedicated Instance, the newest deployment option. The table below highlights the differences between the two deployment methods.
@@ -155,7 +183,7 @@ Your BASE DOMAIN is the DNS Zone.
   - **CognitiveScale Marketplace**: https://marketplace.<base_domain>
   - **Cortex CLI**: https://api.<base_domain>
   
-## Set up ./kube/config to view cluster through Kubernetes dashboard"
+## Set up ./kube/config to view cluster through Kubernetes dashboard
 
 1. From your local teminal remove all lines from the .kube/config OR move the file to another name to back it up.
 2. Login to Azure portal in your terminal (will direct you to web  browser to login)
