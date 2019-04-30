@@ -14,7 +14,7 @@
 
 ## What is Dedicated Cortex Instance?
 
-Cortex Enterprise is deployment strategy for CognitiveScale's Cortex platform. The Cortex platform can be deployed two major ways: on the SaaS Cloud, the original deployment strategy or as a Dedicated Instance, the newest deployment option. The table below highlights the differences between the two deployment methods.
+A Dedicated Cortex Instance is a deployment strategy for CognitiveScale's Cortex platform. The Cortex platform can be deployed two major ways: on the SaaS Cloud, the original deployment strategy or as a Dedicated Instance, the newest deployment option. The table below highlights the differences between the two deployment methods.
 
 |  | **Cortex Cloud** | **Dedicated Cortex Instance** |
 | --- | --- | --- |
