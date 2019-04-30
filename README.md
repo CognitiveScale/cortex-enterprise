@@ -25,7 +25,7 @@ A Dedicated Cortex Instance is a deployment strategy for CognitiveScale's Cortex
 
 ## Prerequisites for Launching Dedicated Cortex Instance
 
-After the prerequisite steps are completed, the client configures their stack in Azure Marketplace, deploys it, and verifies the deployment by logging in to their Kubernetes dashboard.  Your CognitiveScale CS1 and SRE representatives provide assistance and direction throughout the Enterprise deployment process.
+After the prerequisite steps are completed, the client configures their stack in Azure Marketplace, deploys it, and verifies the deployment by logging in to their Kubernetes dashboard.  Your CognitiveScale CS1 and SRE representatives provide assistance and direction throughout the deployment process.
 
   **NOTE**: Instructions for completing prerequisite processes are detailed below.
 
