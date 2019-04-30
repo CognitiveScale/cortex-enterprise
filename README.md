@@ -92,7 +92,7 @@ After these prerequisite steps are completed, you are ready to configure your De
 
 ## Configure Cortex Dedicated Instance  
 
-1. Login to your Azure Marketplace subscription and go to [CognitiveScale Cortex Cognitive Platform][0613da0c]
+1. Login to your Azure Marketplace subscription and go to [CognitiveScale Cortex Cognitive Platform][0613da0c] or search for "Cortex Cognitive Platform."
 2. Click CREATE.
 3. On the BASICS tab enter:
 
