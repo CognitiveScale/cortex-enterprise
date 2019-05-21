@@ -13,7 +13,7 @@
 [subscription-help]: https://docs.microsoft.com/en-us/azure/billing/billing-getting-started
 [service principal]: https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-service-principal
 [setup-smtp-server]: http://guidestomicrosoft.com/2016/02/17/configure-a-smtp-server-in-azure/
-[[resource-group-cli]]: https://docs.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest
+[[resource-group-cli]: https://docs.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest
 
 ## Table of Contents
 
