@@ -172,16 +172,137 @@ Before you begin you must have a registered Internet domain name (e.g. example.c
 
 6. Remove AZ vCPU limits in Azure: See [Resource Manager vCPU quota increase requests][vCPU-quota-requests]. 
 7. [Setup your Azure AD Service Principal][service principal]. 
+ 
+  **For bash users**: 
+ 
+  Run the following script. You will be prompted to select the subscription. Be sure to copy the output to a text file. You   will enter the values later as AD Service Principal App ID and password.
 
+  ```
+  ➜ cat ../azure/getAzureServicePrincipal.sh
+  #!/bin/bash
+  # Interactively create an Azure Service Principal for any of your subscriptions
+  # Author: Bruno Medina (@brusmx)
+  # Requirements:
+  # - Azure Cli 2.0
+  #
+  # Example of usage:
+  # chmod +x obtainSP.sh
+  # ./obtainSP.sh
+  echo "Obtain a Service Principal for one of your Azure Subscriptions."
+  export ROLE="Contributor"
+  export DEFAULT_ACCOUNT=`az account show -o tsv`
+  export SP_NAME=${1:-''}
+  DEFAULT_ACCOUNT_ID=$(printf %s "$DEFAULT_ACCOUNT" | cut -f2)
+  if [ ! -z "$DEFAULT_ACCOUNT_ID" ]; then
+      export DEFAULT_ACCOUNT_NAME=`printf %s "$DEFAULT_ACCOUNT" | cut -f4`
+      echo "Current subscription (default): \"${DEFAULT_ACCOUNT_NAME}\" (${DEFAULT_ACCOUNT_ID})"
+      echo ""
+      export ACCOUNT_LIST=`az account list -o tsv`
+      export ACCOUNT_LIST_ID=`printf %s "$ACCOUNT_LIST" |  cut -f2`
+      export ACCOUNT_LIST_NAMES=`echo $ACCOUNT_LIST |  cut -f4 -d$' '`
+      export ACCOUNT_LIST_SIZE=`echo "$ACCOUNT_LIST" | wc -l`
+      echo "Found $ACCOUNT_LIST_SIZE enabled subscription(s) in your Azure Account:"
+      echo ""
+      export COUNT=1
+      IFS=$'\n'
+      set -f
+      for line in $(printf %s "$ACCOUNT_LIST"); do
+          echo "${COUNT}) $(printf %s "$line" | cut -f4 ) || ($(echo $line | cut -f2 ))"
+        ((COUNT++))
+      done
+      set +f
+      unset IFS
+      echo ""
+      echo "Select a subscription (1-`expr ${ACCOUNT_LIST_SIZE}`) or press [enter] to continue with the (default) one:"
+      read selection
+      echo "Your selection is ${selection}"
+      if [ -z "$selection" ]; then
+          export AZURE_SUBSCRIPTION_ID=$DEFAULT_ACCOUNT_ID
+      elif [ "$selection" -gt 0 ] && [ "$selection" -le "${ACCOUNT_LIST_SIZE}" ]; then
+          export AZURE_SUBSCRIPTION_ID=$(sed -n ${selection}p <<< "$ACCOUNT_LIST_ID")
+      else
+          echo "Incorrect selection, Service Principal not created"
+          exit 1
+      fi
+          echo "Selected ${AZURE_SUBSCRIPTION_ID}"
+          SP_JSON=`az ad sp create-for-rbac --name="${SP_NAME}" --role="${ROLE}" -- scopes="/subscriptions/${AZURE_SUBSCRIPTION_ID}" -o tsv`
+          export AZURE_CLIENT_ID=`printf %s "$SP_JSON" | cut -f1`
+          export AZURE_CLIENT_NAME=`printf %s "$SP_JSON" | cut -f3`
+          export AZURE_CLIENT_SECRET=`printf %s "$SP_JSON" | cut -f4`
+          export AZURE_TENANT_ID=`printf %s "$SP_JSON" | cut -f5`
+          echo "Now you can export these as environment variables:"
+          echo "export AZURE_CLIENT_ID=${AZURE_CLIENT_ID}"
+          echo "export AZURE_CLIENT_NAME=${AZURE_CLIENT_NAME}"
+          echo "export AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET}"
+          echo "export AZURE_TENANT_ID=${AZURE_TENANT_ID}"
+  else
+      echo "Your subscription couldn't be found, make sure you have logged in."
+      exit 1
+  fi
+  ```
+
+**For PowerShell users**: 
+
+Run the following progression of scripts. Be sure to copy the output to a text file. You will enter the values later as AD Service Principal App ID and password
+
+  - a. Open PowerShell
+  
+  ```
+  PS /Users/{username}/scripts/dir with spaces> Install-Module -Name Az -AllowClobber
+
+  Untrusted repository
+  You are installing the modules from an untrusted repository. If you trust this repository, change its InstallationPolicy  value by running the Set-PSRepository cmdlet. Are you sure you want to install the modules from 'PSGallery'?
+   [Y] Yes  [A] Yes to All  [N] No  [L] No to All  [S] Suspend  [?] Help (default is "N"): A
+  ```
+  - b. Login to Azure CLI in Powershell.
+
+  ``` 
+  PS /Users/{username}/scripts/dir with spaces> Connect-AzAccount
+  WARNING: To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code FGQGJ4MHZ to authenticate.
+
+  Account                    SubscriptionName TenantId                                   Environment
+  -------                    ---------------- --------                                  -----------
+  username@cognitivescale.com CS_MS_Azure      7637ac23-3d98-4d4b-abfa-825d4fec72e4     AzureCloud
+  ```
+  - c. Generate the AD Service Principle App ID and secret. Copy the ID to a text editor.
+
+  ```
+  PS /Users/{username}/scripts/dir with spaces> New-AzADServicePrincipal -DisplayName "rd-delete-me-sp-test"
+
+  Secret                : System.Security.SecureString
+  ServicePrincipalNames : {fd00c9ca-fbfa-4d0c-b38d-1291c02c5614, http://rd-delete-me-sp-test}
+  ApplicationId         : fd00c9ca-fbfa-4d0c-b38d-1291c02c5614
+  ObjectType            : ServicePrincipal
+  DisplayName           : rd-delete-me-sp-test
+  Id                    : 54dfef81-cc65-421b-a41a-862951659162
+  Type                  :
+  ```
+  - d. Assign the AD Service Principal to the subscription - Azure Role Assignment.
+
+  ```
+  PS /Users/{username}/scripts/dir with spaces> New-AzRoleAssignment -ObjectId 54dfef81-cc65-421b-a41a-862951659162 - RoleDefinitionName Contributor -Scope "/subscriptions/5a1e976f-e402-4862-8aee-e3475e7f64ec"
+
+  RoleAssignmentId   : /subscriptions/5a1e976f-e402-4862-8aee-  e3475e7f64ec/providers/Microsoft.Authorization/roleAssignments/b15c6770-e5d0-4e48-b5fa-da1641d77183
+  Scope              : /subscriptions/5a1e976f-e402-4862-8aee-e3475e7f64ec
+  DisplayName        : rd-delete-me-sp-test
+  SignInName         :
+  RoleDefinitionName : Contributor
+  RoleDefinitionId   : b24988ac-6180-42a0-ab88-20f7382dd24c
+  ObjectId           : 54dfef81-cc65-421b-a41a-862951659162
+  ObjectType         : ServicePrincipal
+  CanDelegate        : False```
+  ```
+
+  - e. Decrypt the Secret to a GUID that can be entered in the instantiation form.
+
+    `Get-AzureADServicePrincipalKeyCredential (AzureAD)`
+
+8. Set up API permissions.
   - a.) Sign in to your Azure Account through the Azure portal.
   - b.) Select **Azure Active Directory** in the left panel.
   - c.) Select **App registrations** in the center panel.
-  - d.) Select **New application registration** in the top tool bar.
-  - e.) Enter the **Name** (The user-facing display name for this application, which can be changed later)
-  - f.) Select the **Supported account types** (Who can use this application or access this API?) Typically, select the first option: "Accounts in this organizational directory only."
-  - g.) Enter **Redirect URI** for the application. Select "Web" as the type of URI and enter domain you created earlier. 
-  - h.) Click **Create**.
-  - i.) In the middle panel click **API permissions** and add the following:
+  - d.) Click on the registration name (that you want to configure API permissions for).
+  - d.) In the middle panel click **API permissions** and add the following:
     - 1) In the table displayed click **Microsoft graph**. A list will open on the right.
     - 2) At the top of the list click the box labelled **Delegated permissions**.
     - 3) Click **Directory** in the list to open the selectable options.
@@ -192,28 +313,20 @@ Before you begin you must have a registered Internet domain name (e.g. example.c
     - 8) Click **Directory** in the list to open the selectable options.
     - 9) Check **Directory.Read.All**. 
     - 10) At the bottom of the list click **Update Permissions**. The Directory.Read.All permission is added to the table on the left.
+    
     - **NOTE**: The **User.Read** permission is added to Microsoft Graph by default.
       
-  - j.) Under the permissions table click the **Grant admin consent for < account >** button.
+  - j.) Under the permissions table click the **Grant admin consent for {account name}** button.
 
-    Your API permissions should be as follows:
+  Your API permissions should be as follows:
 
     | **API/Permission Name** | **Type** | **Description** | **Admin Consent Required** |
     | --- | --- | --- | --- |
     | Directory.Read.All | Delegated | Read directory data | Yes. Granted for CognitivesScale |
     | Directory.Read.All | Application | Read directory data | Yes. Granted for CognitivesScale |
     | User.Read | Delegated | Sign in and read user profile | Yes. Granted for CognitivesScale |
- 
-  - k.) Return to **App registration** via the breadcrumbs and find your App name in the list. Click to open your app details.
-  - l.) From the metadata at the top of the page copy the **Application ID (client)** and paste in a text file. You will enter this as the **Azure AD Service Principal App ID** when you configure your DCI cluster.
-  - m.) In the middle panel click **Certificates and secrets**.
-  - n.) Under "Client Secrets" click **New Client Secret**.
-  - o.) In the modal's Description field enter "Azure AD Service Principal App password" or any other description.
-  - p.) Select and expiration period.
-  - q.) Click **Add**
-  - r.) Copy the value from the table displayed and paste it in a text file. You will enter this as the **Azure AD Service Principal App Password** when you configure your DCI cluster.
 
-8. Receive CognitiveScale welcome email that provides the `cortex license key`, which provides the proxy access to the Cortex Documentation and Cortex Marketplace web portals.
+9. Receive CognitiveScale welcome email that provides the `cortex license key`, which provides the proxy access to the Cortex Documentation and Cortex Marketplace web portals.
 
 After these prerequisite steps are completed, you are ready to configure your Dedicated Cortex Instance in Azure Marketplace, deploy it, and verify the deployment by logging in to their Kubernetes dashboard.  Your CognitiveScale CS1 and SRE representatives are available to provide assistance and direction throughout the Enterprise deployment process.
 
