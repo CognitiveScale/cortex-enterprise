@@ -11,9 +11,8 @@
 [lesssecureapps]: https://www.google.com/settings/security/lesssecureapps
 [disablecaptcha]: https://accounts.google.com/b/0/displayunlockcaptcha
 [subscription-help]: https://docs.microsoft.com/en-us/azure/billing/billing-getting-started
-[service principal]: https://docs.microsoft.com/en-us/azure/container-registry/container-registry-auth-service-principal
 [setup-smtp-server]: http://guidestomicrosoft.com/2016/02/17/configure-a-smtp-server-in-azure/
-[[resource-group-cli]: https://docs.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest
+[resource-group-cli]: https://docs.microsoft.com/en-us/cli/azure/group?view=azure-cli-latest
 
 ## Table of Contents
 
@@ -171,14 +170,15 @@ Before you begin you must have a registered Internet domain name (e.g. example.c
 **NOTE**: Later, when you create your Dedicated Cortex instance you will create another Resource Group and DNS Zone; these will be specifically for your Cortex Instantiation. The Resource Group and DNS Zone that your create as prerequisites will be referenced in the Dedicated Cortex Instantiation setup.
 
 6. Remove AZ vCPU limits in Azure: See [Resource Manager vCPU quota increase requests][vCPU-quota-requests]. 
-7. [Setup your Azure AD Service Principal][service principal]. 
+7. Setup your Azure AD Service Principal App ID and Password. 
  
-  **For bash users**: 
+ **For bash users**
  
-  Run the following script. You will be prompted to select the subscription. Be sure to copy the output to a text file. You   will enter the values later as AD Service Principal App ID and password.
-
+ - a. Copy the following script to text editor (e.g. atom). 
+  
+  **NOTE**: Replace "main-resource-group" in the script with the name of the main resource group you created as a prerequisite above.
+  
   ```
-  ➜ cat ../azure/getAzureServicePrincipal.sh
   #!/bin/bash
   # Interactively create an Azure Service Principal for any of your subscriptions
   # Author: Bruno Medina (@brusmx)
@@ -191,7 +191,7 @@ Before you begin you must have a registered Internet domain name (e.g. example.c
   echo "Obtain a Service Principal for one of your Azure Subscriptions."
   export ROLE="Contributor"
   export DEFAULT_ACCOUNT=`az account show -o tsv`
-  export SP_NAME=${1:-''}
+  export SP_NAME=${1:-'main-resource-group'}
   DEFAULT_ACCOUNT_ID=$(printf %s "$DEFAULT_ACCOUNT" | cut -f2)
   if [ ! -z "$DEFAULT_ACCOUNT_ID" ]; then
       export DEFAULT_ACCOUNT_NAME=`printf %s "$DEFAULT_ACCOUNT" | cut -f4`
@@ -208,7 +208,7 @@ Before you begin you must have a registered Internet domain name (e.g. example.c
       set -f
       for line in $(printf %s "$ACCOUNT_LIST"); do
           echo "${COUNT}) $(printf %s "$line" | cut -f4 ) || ($(echo $line | cut -f2 ))"
-        ((COUNT++))
+          ((COUNT++))
       done
       set +f
       unset IFS
@@ -238,12 +238,25 @@ Before you begin you must have a registered Internet domain name (e.g. example.c
   else
       echo "Your subscription couldn't be found, make sure you have logged in."
       exit 1
-  fi
-  ```
-
+  fi 
+```
+  
+  - b. Save the script locally as: _getAzureServicePrincipal.sh_ . Make note of the folder where you saved the script.
+  - c. Login to your Azure terminal `az login` (click your account in the browser to authenticate)
+  - d. In the terminal list folders `ls`.
+  - e. Change directories to the folder in which the script has been saved `cd directoryName` .
+  - f. To enable the file to run as an executable, in your terminal enter: `chmod +x getAzureServicePrincipal.sh`.
+  - g. Run the executable: `./getAzureServicePrincipal.sh main-resource-group`. Replace "main-resource-group" with the name of the resource group you created during the prerequisite steps above.
+  - h. The output includes the following items. Save AZURE_CLIENT_ID and AZURE_CLIENT_SECRET to a text editor. You will enter these values as the AD Service Principal App ID and Password when you configure your Dedicated Cortex Instance. 
+    AZURE_CLIENT_ID=
+    AZURE_CLIENT_NAME=
+    AZURE_CLIENT_SECRET=
+    AZURE_TENANT_ID=
+    
+    
 **For PowerShell users**: 
 
-Run the following progression of scripts. Be sure to copy the output to a text file. You will enter the values later as AD Service Principal App ID and password
+Save and run the following progression of scripts. Be sure to copy the output to a text file. You will enter the values later as AD Service Principal App ID and password
 
   - a. Open PowerShell
   
@@ -403,8 +416,8 @@ After these prerequisite steps are completed, you are ready to configure your De
 
 17. (On the first tab) On the SERVICE PRINCIPLE DETAILS page enter:
 
-  - **Azure AD Service Principle App ID**: The Service Principle Application ID to use for Azure resource creation from Kubernetes.
-  - **Azure AD Service Principle Password**: The Service Principle Password to use for Azure resource creation from Kubernetes.
+  - **Azure AD Service Principle App ID**: The Service Principle Application ID to use for Azure resource creation from Kubernetes. Created as a prerequisite, AZURE_CLIENT_ID. 
+  - **Azure AD Service Principle Password**: The Service Principle Password to use for Azure resource creation from Kubernetes. Created as a Prerequisite, AZURE_CLIENT_SECRET.
 
 18. Click **OK**.
 
@@ -431,7 +444,7 @@ After these prerequisite steps are completed, you are ready to configure your De
 3. Click "provision" in the list.
 4. Click "Containers" in the near left panel. An the top left monitor the "Number of Restarts". You will need to click _Refresh_ periodically to monitor this. 
 
-If your deployment has >5 restarts, it is likely to fail. You should abort the process, return to the Resource Groups list, find the groups associated with the your Resource Group and delete them. (Click the three dots on the far right to expose the Delete function.)
+If your deployment shows restarts  > 5, it is likely to fail. You may abort the process, return to the Resource Groups list, find the groups associated with the your Resource Group and delete them. (Click the three dots on the far right to expose the Delete function.)
 
 Additionally, you can monitor the provisioning logs after the "provision" item has been created in your Resource Group container. 
 To monitor the logs, either click the **Logs** link in the Azure UI on the PROVISION page. You need to scroll to follow the progress of the logs
