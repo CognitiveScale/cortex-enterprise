@@ -169,106 +169,56 @@ Before you begin you must have a registered Internet domain name (e.g. example.c
 
 **NOTE**: Later, when you create your Dedicated Cortex instance you will create another Resource Group and DNS Zone; these will be specifically for your Cortex Instantiation. The Resource Group and DNS Zone that your create as prerequisites will be referenced in the Dedicated Cortex Instantiation setup.
 
-6. Remove AZ vCPU limits in Azure: See [Resource Manager vCPU quota increase requests][vCPU-quota-requests]. 
+6. Increase AZ vCPU limits in Azure: See [Resource Manager vCPU quota increase requests][vCPU-quota-requests]. 
+    
+  - a. Click Home, Dashboard or All Services in the left panel, and search for your subscription.
+  - b. Click your Subscription name in the table.
+  - c. In the middle panel click **Usage and Quotas**.
+  - d. At the top right click the **Request Increase** button.
+  - e. In the BASICS form select or enter:
+  
+      - **Issue type**: Service and Subscription limits (quotas)
+      - **Subscription**: Preselected
+      - **Quota type**: Compute-VM (cores-vCPUs) Subscription limit increases
+      - **Support plan**: Preselected
+      
+  - f. Click **Next** at the bottom left of the form.
+  - g. In the PROBLEM form select or enter:
+      - **Severity**: C - Minimal Impact
+      - **Quota details**: Some selections on this tab vary by deployment. Identify the selections that make sense for your deployment
+       - **Deployment model**: Resource Manager
+       - **Location**: Your location
+       - **SKU family**: Based on your deployment requirements. See: 
+        - **Limit**: Based on the number of cores you are using per server, specific to the series selected above.
+  - h. Click **Save and Continue** at the bottom.
+  - i. Enter CONTACT INFORMATION: (This is how MS keeps you updated about your request.
+    - Select **Contact Method** 
+    - Verify other details are correct and make changes as needed. 
+  -j. Click **Create** at the bottom.
+
+   - The window closes. Shortly a notification is displayed at the top right that verifies your request is received. 
+   - A message is then sent from MS to your preferred contact method stating that the request is received.
+   - Another MS message states that the request is approved.
+   - A final message is sent when the request is completed. (This can take up to 48 hours)
+
 7. Setup your Azure AD Service Principal App ID and Password. 
  
  **For bash users**
  
- - a. Copy the following script to text editor (e.g. atom). 
-  
-  **NOTE**: Replace "main-resource-group" in the script with the name of the main resource group you created as a prerequisite above.
-  
-  ```
-  #!/bin/bash
-  # Interactively create an Azure Service Principal for any of your subscriptions
-  # Author: Bruno Medina (@brusmx)
-  # Requirements:
-  # - Azure Cli 2.0
-  #
-  # Example of usage:
-  # chmod +x obtainSP.sh
-  # ./obtainSP.sh
-  echo "Obtain a Service Principal for one of your Azure Subscriptions."
-  export ROLE="Contributor"
-  export DEFAULT_ACCOUNT=`az account show -o tsv`
-  export SP_NAME=${1:-'main-resource-group'}
-  DEFAULT_ACCOUNT_ID=$(printf %s "$DEFAULT_ACCOUNT" | cut -f2)
-  if [ ! -z "$DEFAULT_ACCOUNT_ID" ]; then
-      export DEFAULT_ACCOUNT_NAME=`printf %s "$DEFAULT_ACCOUNT" | cut -f4`
-      echo "Current subscription (default): \"${DEFAULT_ACCOUNT_NAME}\" (${DEFAULT_ACCOUNT_ID})"
-      echo ""
-      export ACCOUNT_LIST=`az account list -o tsv`
-      export ACCOUNT_LIST_ID=`printf %s "$ACCOUNT_LIST" |  cut -f2`
-      export ACCOUNT_LIST_NAMES=`echo $ACCOUNT_LIST |  cut -f4 -d$' 
-      export ACCOUNT_LIST_SIZE=`echo "$ACCOUNT_LIST" | wc -l`
-      echo "Found $ACCOUNT_LIST_SIZE enabled subscription(s) in your Azure Account:"
-      echo ""
-      export COUNT=1
-      IFS=$'\n'
-      set -f
-      for line in $(printf %s "$ACCOUNT_LIST"); do
-          echo "${COUNT}) $(printf %s "$line" | cut -f4 ) || ($(echo $line | cut -f2 ))"
-          ((COUNT++))
-      done
-      set +f
-      unset IFS
-      echo ""
-      echo "Select a subscription (1-`expr ${ACCOUNT_LIST_SIZE}`) or press [enter] to continue with the (default) one:"
-      read selection
-      echo "Your selection is ${selection}"
-      if [ -z "$selection" ]; then
-          export AZURE_SUBSCRIPTION_ID=$DEFAULT_ACCOUNT_ID
-      elif [ "$selection" -gt 0 ] && [ "$selection" -le "${ACCOUNT_LIST_SIZE}" ]; then
-          export AZURE_SUBSCRIPTION_ID=$(sed -n ${selection}p <<< "$ACCOUNT_LIST_ID")
-      else
-          echo "Incorrect selection, Service Principal not created"
-          exit 1
-      fi
-          echo "Selected ${AZURE_SUBSCRIPTION_ID}"
-          SP_JSON=`az ad sp create-for-rbac --name="${SP_NAME}" --role="${ROLE}" -- scopes="/subscriptions/${AZURE_SUBSCRIPTION_ID}" -o tsv`
-          export AZURE_CLIENT_ID=`printf %s "$SP_JSON" | cut -f1`
-          export AZURE_CLIENT_NAME=`printf %s "$SP_JSON" | cut -f3`
-          export AZURE_CLIENT_SECRET=`printf %s "$SP_JSON" | cut -f4`
-          export AZURE_TENANT_ID=`printf %s "$SP_JSON" | cut -f5`
-          echo "Now you can export these as environment variables:"
-          echo "export AZURE_CLIENT_ID=${AZURE_CLIENT_ID}"
-          echo "export AZURE_CLIENT_NAME=${AZURE_CLIENT_NAME}"
-          echo "export AZURE_CLIENT_SECRET=${AZURE_CLIENT_SECRET}"
-          echo "export AZURE_TENANT_ID=${AZURE_TENANT_ID}"
-  else
-      echo "Your subscription couldn't be found, make sure you have logged in."
-      exit 1
-  fi 
-```
-  
-  - b. Save the script locally as: _getAzureServicePrincipal.sh_ . Make note of the folder where you saved the script.
-  - c. Login to your Azure terminal `az login` (click your account in the browser to authenticate)
-  - d. In the terminal list folders `ls`.
-  - e. Change directories to the folder in which the script has been saved `cd directoryName` .
-  - f. To enable the file to run as an executable, in your terminal enter: `chmod +x getAzureServicePrincipal.sh`.
-  - g. Run the executable: `./getAzureServicePrincipal.sh main-resource-group`. Replace "main-resource-group" with the name of the resource group you created during the prerequisite steps above.
-  - h. The output includes the following items. Save AZURE_CLIENT_ID and AZURE_CLIENT_SECRET to a text editor. You will enter these values as the AD Service Principal App ID and Password when you configure your Dedicated Cortex Instance. 
-    AZURE_CLIENT_ID=
-    AZURE_CLIENT_NAME=
-    AZURE_CLIENT_SECRET=
-    AZURE_TENANT_ID=
-        
-**For PowerShell users**: 
+  Login to your Azure account from a local terminal by running `az login` and select your account in the browser window that is displayed.
+ 
+  - a. Copy / paste this command in your terminal: `wget -O - https://raw.githubusercontent.com/CognitiveScale/dci-scripts/master/createServicePrincipal.sh | bash`
+  - b. The output includes the following items. Save AZURE_CLIENT_ID and AZURE_CLIENT_SECRET to a text editor. You will enter these values as the AD Service Principal App ID and Password when you configure your Dedicated Cortex Instance.
+  AZURE_CLIENT_ID=
+  AZURE_CLIENT_NAME=
+  AZURE_CLIENT_SECRET=
+  AZURE_TENANT_ID= (edited) 
 
- - a. Open your PowerShell prompt and login to Azure.
- - b. Convert you PowerShell to accept Bash commands by entering `bash` in your terminal.
- - c. Next you are going to save the shell script above. Enter `vi getAzureServicePrincipal.sh` in the command line. 
- - d. Open insert mode by entering `i` in the command line; then copy and paste the script above into the terminal.
- - e. Click the **esc** key to stop the insert mode.
- - f. Enter `:x` in the terminal to save and exit.
- - g. Enter `cat getAzureServicePrincipal.sh`. If the script is displayed in the terminal it has been added. 
- - h.  - f. To enable the file to run as an executable, in your terminal enter: `chmod +x getAzureServicePrincipal.sh`.
-  - g. Run the executable: `./getAzureServicePrincipal.sh main-resource-group`. Replace "main-resource-group" with the name of the resource group you created during the prerequisite steps above.
-  - h. The output includes the following items. Save AZURE_CLIENT_ID and AZURE_CLIENT_SECRET to a text editor. You will enter these values as the AD Service Principal App ID and Password when you configure your Dedicated Cortex Instance. 
-    AZURE_CLIENT_ID=
-    AZURE_CLIENT_NAME=
-    AZURE_CLIENT_SECRET=
-    AZURE_TENANT_ID=
+ **For PowerShell users**:
+
+  - a. Open your PowerShell prompt and login to Azure.
+  - b. Convert you PowerShell to accept Bash commands by entering `bash` in your terminal.
+  - c. Follow the instructions "for bash users" above.
         
 8. Set up API permissions.
   - a.) Sign in to your Azure Account through the Azure portal.
