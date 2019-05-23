@@ -199,7 +199,7 @@ Before you begin you must have a registered Internet domain name (e.g. example.c
       echo ""
       export ACCOUNT_LIST=`az account list -o tsv`
       export ACCOUNT_LIST_ID=`printf %s "$ACCOUNT_LIST" |  cut -f2`
-      export ACCOUNT_LIST_NAMES=`echo $ACCOUNT_LIST |  cut -f4 -d$' '`
+      export ACCOUNT_LIST_NAMES=`echo $ACCOUNT_LIST |  cut -f4 -d$' 
       export ACCOUNT_LIST_SIZE=`echo "$ACCOUNT_LIST" | wc -l`
       echo "Found $ACCOUNT_LIST_SIZE enabled subscription(s) in your Azure Account:"
       echo ""
@@ -252,64 +252,24 @@ Before you begin you must have a registered Internet domain name (e.g. example.c
     AZURE_CLIENT_NAME=
     AZURE_CLIENT_SECRET=
     AZURE_TENANT_ID=
-    
-    
+        
 **For PowerShell users**: 
 
-Save and run the following progression of scripts. Be sure to copy the output to a text file. You will enter the values later as AD Service Principal App ID and password
-
-  - a. Open PowerShell
-  
-  ```
-  PS /Users/{username}/scripts/dir with spaces> Install-Module -Name Az -AllowClobber
-
-  Untrusted repository
-  You are installing the modules from an untrusted repository. If you trust this repository, change its InstallationPolicy  value by running the Set-PSRepository cmdlet. Are you sure you want to install the modules from 'PSGallery'?
-   [Y] Yes  [A] Yes to All  [N] No  [L] No to All  [S] Suspend  [?] Help (default is "N"): A
-  ```
-  - b. Login to Azure CLI in Powershell.
-
-  ``` 
-  PS /Users/{username}/scripts/dir with spaces> Connect-AzAccount
-  WARNING: To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code FGQGJ4MHZ to authenticate.
-
-  Account                    SubscriptionName TenantId                                   Environment
-  -------                    ---------------- --------                                  -----------
-  username@cognitivescale.com CS_MS_Azure      7637ac23-3d98-4d4b-abfa-825d4fec72e4     AzureCloud
-  ```
-  - c. Generate the AD Service Principle App ID and secret. Copy the ID to a text editor.
-
-  ```
-  PS /Users/{username}/scripts/dir with spaces> New-AzADServicePrincipal -DisplayName "rd-delete-me-sp-test"
-
-  Secret                : System.Security.SecureString
-  ServicePrincipalNames : {fd00c9ca-fbfa-4d0c-b38d-1291c02c5614, http://rd-delete-me-sp-test}
-  ApplicationId         : fd00c9ca-fbfa-4d0c-b38d-1291c02c5614
-  ObjectType            : ServicePrincipal
-  DisplayName           : rd-delete-me-sp-test
-  Id                    : 54dfef81-cc65-421b-a41a-862951659162
-  Type                  :
-  ```
-  - d. Assign the AD Service Principal to the subscription - Azure Role Assignment.
-
-  ```
-  PS /Users/{username}/scripts/dir with spaces> New-AzRoleAssignment -ObjectId 54dfef81-cc65-421b-a41a-862951659162 - RoleDefinitionName Contributor -Scope "/subscriptions/5a1e976f-e402-4862-8aee-e3475e7f64ec"
-
-  RoleAssignmentId   : /subscriptions/5a1e976f-e402-4862-8aee-  e3475e7f64ec/providers/Microsoft.Authorization/roleAssignments/b15c6770-e5d0-4e48-b5fa-da1641d77183
-  Scope              : /subscriptions/5a1e976f-e402-4862-8aee-e3475e7f64ec
-  DisplayName        : rd-delete-me-sp-test
-  SignInName         :
-  RoleDefinitionName : Contributor
-  RoleDefinitionId   : b24988ac-6180-42a0-ab88-20f7382dd24c
-  ObjectId           : 54dfef81-cc65-421b-a41a-862951659162
-  ObjectType         : ServicePrincipal
-  CanDelegate        : False```
-  ```
-
-  - e. Decrypt the Secret to a GUID that can be entered in the instantiation form.
-
-    `Get-AzureADServicePrincipalKeyCredential (AzureAD)`
-
+ - a. Open your PowerShell prompt and login to Azure.
+ - b. Convert you PowerShell to accept Bash commands by entering `bash` in your terminal.
+ - c. Next you are going to save the shell script above. Enter `vi getAzureServicePrincipal.sh` in the command line. 
+ - d. Open insert mode by entering `i` in the command line; then copy and paste the script above into the terminal.
+ - e. Click the **esc** key to stop the insert mode.
+ - f. Enter `:x` in the terminal to save and exit.
+ - g. Enter `cat getAzureServicePrincipal.sh`. If the script is displayed in the terminal it has been added. 
+ - h.  - f. To enable the file to run as an executable, in your terminal enter: `chmod +x getAzureServicePrincipal.sh`.
+  - g. Run the executable: `./getAzureServicePrincipal.sh main-resource-group`. Replace "main-resource-group" with the name of the resource group you created during the prerequisite steps above.
+  - h. The output includes the following items. Save AZURE_CLIENT_ID and AZURE_CLIENT_SECRET to a text editor. You will enter these values as the AD Service Principal App ID and Password when you configure your Dedicated Cortex Instance. 
+    AZURE_CLIENT_ID=
+    AZURE_CLIENT_NAME=
+    AZURE_CLIENT_SECRET=
+    AZURE_TENANT_ID=
+        
 8. Set up API permissions.
   - a.) Sign in to your Azure Account through the Azure portal.
   - b.) Select **Azure Active Directory** in the left panel.
