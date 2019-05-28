@@ -61,11 +61,11 @@ After the prerequisite steps are completed, the client configures their stack in
 
 Your Dedicated Cortex Instance is configured as follows:
 
-  - **Subscription**: Create a pay-as-you-go Azure Marketplace subscription (prerequisite)
+  - **Subscription**: Create an Azure Marketplace subscription (prerequisite)
    - **Main Resource Group**: Within your subscription you must have a main Resource Group (prerequisite) - NOTE: This Resource Group must be NEW with no existing resources. 
     - **Main DNS Zone**: Within your main resource group you must configure your main DNS Zone (prerequisite)
-     - **DCI Resource Group**: In the DCI Create setup you must create a NEW empty resource group for your DCI deployment. 
-      - **DCI DNS Zone** (subdomain): Within the DCI Resource Group you must create a DNS subdomain that references the Main DNS Zone. Your URLs and access to Cortex tools and UIs are based on this DNS Zone-Base Domain
+     - **DCI Resource Group**: In the CognitiveScale DCI Create setup in the Azure Marketplace you must create a NEW empty resource group for your DCI deployment. 
+      - **DCI DNS Zone** (subdomain): Within the DCI Resource Group you must create a DNS subdomain that references the Main DNS Zone. Your URLs and access to Cortex tools and UIs are based on this DNS Zone-Base Domain. (e.g. aks.yourcompany.com)
 
 ### Before you begin working in Azure:
 
@@ -95,7 +95,7 @@ You will require the following details to complete the instantiation process:
   - Subscription: (created by user as part of the prerequisites process)
   - Resource Group (main): (created as part of the prerequisites process)
   - DNS Zone (main): (created as part of the prerequisite process)
-  - Location: (centralUS)  
+  - Location: (default is centralUS)  
   - Cortex Lisence Key: (provided by CognitiveScale in welcome email)
   - Cortex Cluster Name: (user created)
   - VM SSH Public Key: (user generated) 
@@ -245,9 +245,9 @@ Before you begin you must have a registered Internet domain name (e.g. example.c
 
     | **API/Permission Name** | **Type** | **Description** | **Admin Consent Required** |
     | --- | --- | --- | --- |
-    | Directory.Read.All | Delegated | Read directory data | Yes. Granted for CognitivesScale |
-    | Directory.Read.All | Application | Read directory data | Yes. Granted for CognitivesScale |
-    | User.Read | Delegated | Sign in and read user profile | Yes. Granted for CognitivesScale |
+    | Directory.Read.All | Delegated | Read directory data | Yes. Granted for AccountName |
+    | Directory.Read.All | Application | Read directory data | Yes. Granted for AccountName |
+    | User.Read | Delegated | Sign in and read user profile | Yes. Granted for AccountName |
 
 9. Receive CognitiveScale welcome email that provides the `cortex license key`, which provides the proxy access to the Cortex Documentation and Cortex Marketplace web portals.
 
