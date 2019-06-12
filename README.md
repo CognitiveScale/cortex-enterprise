@@ -296,7 +296,7 @@ After these prerequisite steps are completed, you are ready to configure your De
   - **Cortex Administrator Email Address**: The administrator must have the permissions described in Prerequisites.
   - **Cortex Administrator Password**: Use a secure password and make note of it.
   - **Confirm Password**: Duplicated the password exactly.
-  - **Cortex Account Name**: Enter your desired Account Name.
+  - **Cortex Account Name**: Enter your desired Account Name. (Use only lowercase letters, underscores, and dashes; NO spaces.)
 
 7. (In the first tab) Click OK. **STOP**
 
@@ -315,7 +315,8 @@ After these prerequisite steps are completed, you are ready to configure your De
   Two records are listed in the table, NS and SOA types. You need to populate the table with the 4 Name Servers that are listed in the metadata at the top right. 
   
 14. Duplicate the second tab and in the third tab click **Add Record Set**.
-15 (In the third tab) Enter the following in the modal fields for each of the Name Servers 1-4:
+15. (In the third tab) Enter the following in the modal fields for each of the Name Servers 1-4:
+
   - **Name**: Copy the value of **Name server #**
   - **Type**: Select "NS"
   - **TTL and TTL Unit**: Enter the "time-to-live" TTL, a setting for each DNS record that specifies how long a resolver is supposed to cache the DNS query before the query expires and a new one needs to be done.
